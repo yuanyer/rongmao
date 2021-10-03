@@ -18,7 +18,8 @@ export default {
 .base-content {
   width: 100%;
   height: calc(100vh - 50px);
-  background: rgb(227, 227, 227);
+  /* background: rgb(227, 227, 227); */
+  background: #fff;
   padding: 15px;
   overflow: auto;
 }

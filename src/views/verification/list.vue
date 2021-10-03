@@ -10,13 +10,6 @@
       />
 
       <sf-grid :columns="columns" :store-config="configs"></sf-grid>
-      <el-dialog title="加积分" :visible.sync="isShow" width="30%">
-        <sf-base-form :eles="eles" ref="mybaseForm"></sf-base-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="isShow = false">取 消</el-button>
-          <el-button type="primary" @click="isShow = false">确 定</el-button>
-        </span>
-      </el-dialog>
     </template>
   </base-content>
 </template>
@@ -110,114 +103,89 @@ export default {
       ],
       baseSearchs: [
         {
-          label: '积分流水时间',
+          label: '开始时间',
           elType: 'date',
-          placeholder: '请选择积分流水时间范围',
+          placeholder: '请选择开始时间',
           value: '',
-          name: 'itemCode'
+          name: 'startTime'
         },
         {
-          label: '用户手机号',
-          elType: 'input',
-          placeholder: '请输入用户手机号',
+          label: '结束时间',
+          elType: 'date',
+          placeholder: '请选择结束时间',
           value: '',
-          name: 'vendorCode'
+          name: 'endTime'
+        },
+        {
+          label: '状态',
+          elType: 'select',
+          placeholder: '请选择状态',
+          value: '',
+          name: 'start',
+          options: [
+            {
+              label: '已核销',
+              value: 1
+            },
+            {
+              label: '待核销',
+              value: 2
+            }
+          ]
         }
       ],
       allSearchs: [
         {
-          label: '积分流水时间',
+          label: '开始时间',
           elType: 'date',
-          placeholder: '请选择积分流水时间范围',
+          placeholder: '请选择开始时间',
           value: '',
-          name: 'itemCode'
+          name: 'startTime'
         },
         {
-          label: '用户手机号',
+          label: '结束时间',
+          elType: 'date',
+          placeholder: '请选择结束时间',
+          value: '',
+          name: 'endTime'
+        },
+        {
+          label: '状态',
+          elType: 'select',
+          placeholder: '请选择状态',
+          value: '',
+          name: 'start',
+          options: [
+            {
+              label: '已核销',
+              value: 1
+            },
+            {
+              label: '待核销',
+              value: 2
+            }
+          ]
+        },
+        {
+          label: '订单id',
           elType: 'input',
-          placeholder: '请输入用户手机号',
+          placeholder: '订单id',
           value: '',
-          name: 'vendorCode'
+          name: 'orderId'
         },
         {
-          label: '行为类型',
-          elType: 'select',
-          placeholder: '请请择行为类型',
+          label: '用户id',
+          elType: 'input',
+          placeholder: '请输入用户id',
           value: '',
-          name: 'category',
-          options: [
-            {
-              label: '消费提现',
-              value: 1
-            },
-            {
-              label: '手动处理',
-              value: 2
-            },
-            {
-              label: '提现',
-              value: 3
-            }
-          ]
+          name: 'userId'
         },
         {
-          label: '所属咨询中心',
-          elType: 'select',
-          placeholder: '所属咨询中心',
+          label: '商品id',
+          elType: 'input',
+          placeholder: '请输入商品id',
           value: '',
-          name: 'category1',
-          options: [
-            {
-              label: '1',
-              value: 1
-            },
-            {
-              label: '2',
-              value: 2
-            },
-            {
-              label: '3',
-              value: 3
-            }
-          ]
-        },
-        {
-          label: '积分状态',
-          elType: 'select',
-          placeholder: '请请择积分状态',
-          value: '',
-          name: 'category2',
-          options: [
-            {
-              label: '可提现',
-              value: 0
-            },
-            {
-              label: '不可提现',
-              value: 1
-            }
-          ]
-        },
-        {
-          label: '运营中心',
-          elType: 'select',
-          placeholder: '请请择运营中心',
-          value: '',
-          name: 'category3',
-          options: [
-            {
-              label: '1',
-              value: 1
-            },
-            {
-              label: '2',
-              value: 2
-            },
-            {
-              label: '3',
-              value: 3
-            }
-          ]
+          name: 'productionId'
         }
       ],
       baseHandles: [
@@ -232,48 +200,42 @@ export default {
           text: '重置',
           key: 'reset',
           handle: this.handleBaseSearch
-        },
-        {
-          btnType: 'default',
-          text: '加积分',
-          key: 'add',
-          handle: this.handleBaseSearch
         }
       ],
       baseFormData: {},
       // here is table
       columns: [
         {
-          title: '时间',
+          title: '核销码',
+          props: 'wechat'
+        },
+        {
+          title: '核销时间',
           props: 'registTime'
         },
         {
+          title: '商品id',
+          props: 'id'
+        },
+        {
+          title: '订单id',
+          props: 'id'
+        },
+        {
           title: '用户id',
-          props: 'name'
+          props: 'id'
         },
         {
-          title: '金额',
+          title: '门店机构',
           props: 'address'
         },
         {
-          title: '行为类型',
-          props: 'address'
+          title: '用户确认状态',
+          props: 'zixun'
         },
         {
-          title: '状态',
-          props: 'address'
-        },
-        {
-          title: '所属运营中心',
-          props: 'address'
-        },
-        {
-          title: '所属咨询中心',
-          props: 'address'
-        },
-        {
-          title: '备注',
-          props: 'address'
+          title: '确认时间',
+          props: 'registTime'
         }
       ],
       configs: {

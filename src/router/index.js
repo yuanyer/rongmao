@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/layout'
+import Layout from '@/layout';
 
 export const constantRoutes = [
   {
@@ -183,29 +183,19 @@ export const constantRoutes = [
         path: 'orders',
         name: 'orders',
         component: () => import('@/views/groupbuy/orders'),
-        meta: { title: '拼团订单', icon: 'el-icon-s-order' },
-        children: [
-          {
-            path: 'records',
-            name: 'records',
-            component: () => import('@/views/groupbuy/records'),
-            meta: { title: '消费记录', icon: 'el-icon-goods' }
-          },
-          {
-            path: 'buyer',
-            name: 'buyer',
-            component: () => import('@/views/groupbuy/buyer'),
-            meta: { title: '制定购买人', icon: 'el-icon-user' },
-            children: [
-              {
-                path: 'selbuyer',
-                name: 'selbuyer',
-                component: () => import('@/views/groupbuy/selbuyer'),
-                meta: { title: '选定购买人', icon: 'el-icon-user' }
-              }
-            ]
-          }
-        ]
+        meta: { title: '拼团订单', icon: 'el-icon-s-order' }
+      },
+      {
+        path: 'records',
+        name: 'records',
+        component: () => import('@/views/groupbuy/records'),
+        meta: { title: '消费记录', icon: 'el-icon-goods' }
+      },
+      {
+        path: 'selbuyer',
+        name: 'selbuyer',
+        component: () => import('@/views/groupbuy/selbuyer'),
+        meta: { title: '选定购买人', icon: 'el-icon-user' }
       }
     ]
   },
@@ -252,20 +242,21 @@ export const constantRoutes = [
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
-]
+];
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  });
 
-const router = createRouter()
+const router = createRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;
