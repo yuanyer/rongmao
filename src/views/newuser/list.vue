@@ -1,151 +1,157 @@
 <template>
-  <div class="container">
-    <sf-base-search
-      :baseSearchs="baseSearchs"
-      :allSearchs="allSearchs"
-      :base-handles="baseHandles"
-      :all-handles="AllHandles"
-      :baseData="baseFormData"
-      ref="baseSearchEle"
-    />
-  </div>
+  <base-content>
+    <template>
+      <sf-base-search
+        :baseSearchs="baseSearchs"
+        :allSearchs="allSearchs"
+        :base-handles="baseHandles"
+        :all-handles="AllHandles"
+        :baseData="baseFormData"
+        ref="baseSearchEle"
+      />
+
+      <sf-grid
+        :columns="columns"
+        :operations="operations"
+        :store-config="configs"
+      ></sf-grid>
+      <el-dialog title="修改推广关系" :visible.sync="isShow" width="30%">
+        <sf-base-form :eles="eles" ref="mybaseForm"></sf-base-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="isShow = false">取 消</el-button>
+          <el-button type="primary" @click="isShow = false">确 定</el-button>
+        </span>
+      </el-dialog>
+    </template>
+  </base-content>
 </template>
 
-<!-- <script>
-     import { mapGetters } from 'vuex';
-
-     export default {
-     data() {
-     return {
-     name: 'zhangsan'
-     };
-     },
-     computed: {
-     ...mapGetters(['sidebar']),
-     routes() {
-     return this.$router.options.routes;
-     }
-     }
-     };
-     </script>
--->
 <script>
+import { mapGetters } from 'vuex';
+const Response = {
+  data: [
+    {
+      id: 0,
+      tel: '1521234098',
+      registTime: 1621395027069,
+      name: '王小虎',
+      address: '上海市普陀区金沙江路 1518 弄',
+      wechat: 'xxx',
+      zijima: '1111',
+      jifeng: 'aaaa',
+      postion: 'aasafsaf',
+      yunying: '1111',
+      zixun: '2222'
+    },
+    {
+      id: 1,
+      tel: '1521234098',
+      registTime: 1621395027069,
+      name: '王小虎',
+      address: '上海市普陀区金沙江路 1518 弄',
+      wechat: 'xxx',
+      zijima: '1111',
+      jifeng: 'aaaa',
+      postion: 'aasafsaf',
+      yunying: '1111',
+      zixun: '2222'
+    },
+    {
+      id: 2,
+      tel: '1521234098',
+      registTime: 1621395027069,
+      name: '王小虎',
+      address: '上海市普陀区金沙江路 1518 弄',
+      wechat: 'xxx',
+      zijima: '1111',
+      jifeng: 'aaaa',
+      postion: 'aasafsaf',
+      yunying: '1111',
+      zixun: '2222'
+    },
+    {
+      id: 3,
+      tel: '1521234098',
+      registTime: 1621395027069,
+      name: '王小虎',
+      address: '上海市普陀区金沙江路 1518 弄',
+      wechat: 'xxx',
+      zijima: '1111',
+      jifeng: 'aaaa',
+      postion: 'aasafsaf',
+      yunying: '1111',
+      zixun: '2222'
+    }
+  ],
+  total: 120
+};
+
 export default {
+  computed: {
+    ...mapGetters(['sidebar']),
+    routes() {
+      return this.$router.options.routes;
+    }
+  },
   data() {
-    const selectOption = () => {
-      return [
-        {
-          label: '货主a',
-          value: 1
-        },
-        {
-          label: '货主b',
-          value: 2
-        },
-        {
-          label: '货主c',
-          value: 3
-        },
-        {
-          label: '货主d',
-          value: 4
-        }
-      ];
-    };
     return {
-      count: 5,
-      oneOptions: selectOption(),
-      baseSearchs: [
+      // here is dialog
+      isShow: false,
+      eles: [
         {
-          label: '商品编码',
+          label: '用户ID',
           elType: 'input',
-          placeholder: '请输入',
+          readonly: true,
+          placeholder: '',
+          value: '',
+          name: 'id'
+        },
+        {
+          label: '原推广人ID',
+          elType: 'input',
+          placeholder: '',
+          readonly: true,
           value: '',
           name: 'itemCode'
         },
         {
-          label: '货主',
-          elType: 'select',
-          placeholder: '请输入货主代码',
+          label: '新推广人',
+          elType: 'input',
+          placeholder: '请输入新推广人ID',
           value: '',
-          name: 'vendorCode',
-          remote: true,
-          loading: false,
-          reserveKeyword: true,
-          options: [],
-          remoteMethod: this.fetchOwnerOnepage('base-search'),
-          infiniteScroll: this.baseSearchScroll('base-search')
+          name: 'newCode'
+        }
+      ],
+      baseSearchs: [
+        {
+          label: '推荐者推广码',
+          elType: 'input',
+          placeholder: '请输入推荐者推广码',
+          value: '',
+          name: 'itemCode'
+        },
+        {
+          label: '注册时间',
+          elType: 'date',
+          placeholder: '请输入注册时间',
+          value: '',
+          name: 'vendorCode'
         }
       ],
       allSearchs: [
         {
-          label: '商品编码',
+          label: '推荐者推广码',
           elType: 'input',
-          placeholder: '请输入',
+          placeholder: '请输入推荐者推广码',
           value: '',
           name: 'itemCode'
         },
         {
-          label: '商品名称',
-          elType: 'input',
-          placeholder: '请输入',
-          value: '',
-          name: 'itemName'
-        },
-        {
-          label: '货主',
-          elType: 'select',
-          placeholder: '请输入货主代码',
-          value: '',
-          name: 'vendorCode',
-          remote: true,
-          loading: false,
-          reserveKeyword: true,
-          options: [],
-          remoteMethod: this.fetchOwnerOnepage('all-search'),
-          infiniteScroll: this.baseSearchScroll('all-search')
-        },
-        {
-          label: '计量单位',
-          elType: 'input',
-          placeholder: '请输入',
-          value: '',
-          name: 'unit'
-        },
-        {
-          label: '品类',
-          elType: 'select',
-          placeholder: '请请择品类',
-          value: '',
-          name: 'category',
-          options: [
-            {
-              label: '品类A',
-              value: 1
-            },
-            {
-              label: '品类B',
-              value: 2
-            },
-            {
-              label: '品类C',
-              value: 3
-            }
-          ]
-        },
-        {
-          label: '规格',
-          elType: 'input',
-          placeholder: '请输入',
-          value: '',
-          name: 'spec'
-        },
-        {
-          label: '保质期',
+          label: '注册时间',
           elType: 'date',
-          placeholder: '请选择日期',
+          placeholder: '请输入注册时间',
           value: '',
-          name: 'expirationTime'
+          name: 'vendorCode'
         }
       ],
       baseHandles: [
@@ -162,74 +168,67 @@ export default {
           handle: this.handleBaseSearch
         }
       ],
-      AllHandles: [
+      baseFormData: {},
+      // here is table
+      columns: [
         {
-          btnType: 'primary',
-          text: '新增',
-          icon: 'add',
-          key: 'add',
-          handle: this.add
+          title: '用户id',
+          props: 'name'
         },
         {
-          btnType: 'default',
-          text: '删除',
-          key: 'delete',
-          handle: this.handerAll
+          title: '用户手机号',
+          props: 'address'
         },
         {
-          btnType: 'default',
-          text: '导入',
-          key: 'import',
-          handle: this.handerAll
+          title: '注册时间',
+          props: 'registTime'
         },
         {
-          btnType: 'default',
-          text: '导出',
-          key: 'export',
-          handle: this.handerAll
+          title: '微信昵称',
+          props: 'address'
+        },
+        {
+          title: '推荐者推广码',
+          props: 'address'
         }
       ],
-      baseFormData: {}
+      operations: [
+        {
+          label: '编辑',
+          handler: (row) => {
+            console.log(row);
+            this.isShow = true;
+            const { id, name } = row;
+            this.eles[0].value = id;
+            this.eles[1].value = name;
+          }
+        }
+      ],
+      configs: {
+        loadDataApi: function () {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(Response);
+            }, 100);
+          });
+        },
+        fetchListData: function (res) {
+          return res.data;
+        },
+        fetchTotal: function (res) {
+          return res.total;
+        },
+        generateQueryParams: function (pagination) {
+          let { pageIndex, pageSize } = pagination;
+          return {
+            page: pageIndex,
+            limit: pageSize
+          };
+        }
+      }
     };
   },
   methods: {
-    // fetch one page data
-    fetchOwnerOnepage(key) {
-      return (code) => {
-        // You can get data of remote ajax by code
-        console.log(code);
-        if (key === 'base-search') {
-          this.baseSearchs[1].options = this.oneOptions;
-        } else {
-          this.allSearchs[2].options = this.oneOptions;
-        }
-      };
-    },
-
-    // If a lot of data , and You could scroll divide pages
-    baseSearchScroll(key) {
-      return () => {
-        if (key === 'base-search') {
-          let n = this.count;
-          this.count += 5;
-          for (; n < this.count; n++) {
-            this.baseSearchs[1].options.push({
-              label: `货主${n}`,
-              value: n
-            });
-          }
-        } else {
-          let n = this.count;
-          this.count += 5;
-          for (; n < this.count; n++) {
-            this.allSearchs[2].options.push({
-              label: `货主${n}`,
-              value: n
-            });
-          }
-        }
-      };
-    },
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
@@ -249,21 +248,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.container {
-  text-align: center;
-  width: 100%;
-  height: calc(100vh - 50px);
-  background: rgb(227, 227, 227);
-}
-.container img {
-  width: 800px;
-}
-.header {
-  background: rgb(227, 227, 227);
-  font-size: 30px;
-  height: 200px;
-  padding-top: 30px;
-}
-</style>
