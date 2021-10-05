@@ -213,7 +213,7 @@ export default {
           handler: (row) => {
             console.log(row);
             // this.$message.success('编辑');
-            this.$router.push('/orders/expense');
+            this.$router.push('/groupbuy/edit');
           }
         },
         {

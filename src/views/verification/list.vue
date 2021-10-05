@@ -9,70 +9,15 @@
         ref="baseSearchEle"
       />
 
-      <sf-grid :columns="columns" :store-config="configs"></sf-grid>
+      <sf-grid :columns="columns" :store-config="configs" ref="grid" />
     </template>
   </base-content>
 </template>
 
 <script>
+import { queryParams } from '@/utils';
 import { mapGetters } from 'vuex';
-const Response = {
-  data: [
-    {
-      id: 0,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 1,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 2,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 3,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    }
-  ],
-  total: 120
-};
+import { fetchVerificationList } from '@/api/verification';
 
 export default {
   computed: {
@@ -107,21 +52,21 @@ export default {
           elType: 'date',
           placeholder: '请选择开始时间',
           value: '',
-          name: 'startTime'
+          name: 'start_time'
         },
         {
           label: '结束时间',
           elType: 'date',
           placeholder: '请选择结束时间',
           value: '',
-          name: 'endTime'
+          name: 'end_time'
         },
         {
           label: '状态',
           elType: 'select',
           placeholder: '请选择状态',
           value: '',
-          name: 'start',
+          name: 'user_confirm_status',
           options: [
             {
               label: '已核销',
@@ -129,7 +74,7 @@ export default {
             },
             {
               label: '待核销',
-              value: 2
+              value: 0
             }
           ]
         }
@@ -140,21 +85,21 @@ export default {
           elType: 'date',
           placeholder: '请选择开始时间',
           value: '',
-          name: 'startTime'
+          name: 'start_time'
         },
         {
           label: '结束时间',
           elType: 'date',
           placeholder: '请选择结束时间',
           value: '',
-          name: 'endTime'
+          name: 'end_time'
         },
         {
           label: '状态',
           elType: 'select',
           placeholder: '请选择状态',
           value: '',
-          name: 'start',
+          name: 'user_confirm_status',
           options: [
             {
               label: '已核销',
@@ -162,7 +107,7 @@ export default {
             },
             {
               label: '待核销',
-              value: 2
+              value: 0
             }
           ]
         },
@@ -171,21 +116,21 @@ export default {
           elType: 'input',
           placeholder: '订单id',
           value: '',
-          name: 'orderId'
+          name: 'order_id'
         },
         {
           label: '用户id',
           elType: 'input',
           placeholder: '请输入用户id',
           value: '',
-          name: 'userId'
+          name: 'user_id'
         },
         {
           label: '商品id',
           elType: 'input',
           placeholder: '请输入商品id',
           value: '',
-          name: 'productionId'
+          name: 'product_id'
         }
       ],
       baseHandles: [
@@ -207,56 +152,57 @@ export default {
       columns: [
         {
           title: '核销码',
-          props: 'wechat'
+          props: 'code'
         },
         {
           title: '核销时间',
-          props: 'registTime'
+          props: 'user_confirm_time'
         },
         {
           title: '商品id',
-          props: 'id'
+          props: 'product_id'
         },
         {
           title: '订单id',
-          props: 'id'
+          props: 'order_id'
         },
         {
           title: '用户id',
-          props: 'id'
+          props: 'user_id'
         },
         {
           title: '门店机构',
-          props: 'address'
+          props: 'account_type_name'
         },
         {
           title: '用户确认状态',
-          props: 'zixun'
+          props: 'user_confirm_status'
         },
         {
           title: '确认时间',
           props: 'registTime'
         }
       ],
+      formData: {},
       configs: {
-        loadDataApi: function () {
+        loadDataApi: (p) => {
           return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(Response);
-            }, 100);
+            fetchVerificationList(queryParams(p, this.formData)).then((res) => {
+              resolve(res);
+            });
           });
         },
         fetchListData: function (res) {
           return res.data;
         },
         fetchTotal: function (res) {
-          return res.total;
+          return res.meta.count;
         },
         generateQueryParams: function (pagination) {
           let { pageIndex, pageSize } = pagination;
           return {
-            page: pageIndex,
-            limit: pageSize
+            page_num: pageIndex,
+            page_size: pageSize
           };
         }
       }
@@ -269,11 +215,9 @@ export default {
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
-      console.log(val);
-      console.log(key);
       if (key === 'search') {
-        console.log(val);
-        alert(JSON.stringify(val));
+        this.formData = val;
+        this.$refs.grid.query();
       } else if (key === 'add') {
         console.log('add jifeng');
         this.isShow = true;

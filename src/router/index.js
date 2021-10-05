@@ -174,7 +174,7 @@ export const constantRoutes = [
         meta: { title: '拼团一览表', icon: 'el-icon-goods' }
       },
       {
-        path: 'list',
+        path: 'edit',
         name: 'list',
         component: () => import('@/views/groupbuy/edit'),
         meta: { title: '新建/编辑拼团', icon: 'el-icon-edit' }

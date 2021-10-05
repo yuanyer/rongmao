@@ -12,6 +12,7 @@
         :columns="columns"
         :operations="operations"
         :store-config="configs"
+        ref="gird"
       />
     </template>
   </base-content>
@@ -19,64 +20,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-const Response = {
-  data: [
-    {
-      id: 0,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 1,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 2,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 3,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    }
-  ],
-  total: 120
-};
-
+import { queryParams } from '@/utils';
+import { fetchOrderList } from '@/api/verification';
 export default {
   computed: {
     ...mapGetters(['sidebar']),
@@ -86,93 +31,27 @@ export default {
   },
   data() {
     return {
-      // here is dialog
-      eles: [
-        {
-          label: '活动名称',
-          elType: 'input',
-          placeholder: '请输入活动名称',
-          value: '',
-          name: 'name'
-        },
-        {
-          label: '开始时间',
-          elType: 'date',
-          placeholder: '请选择开始时间',
-          value: '',
-          name: 'startTime'
-        },
-        {
-          label: '结束时间',
-          elType: 'date',
-          placeholder: '请选择结束时间',
-          value: '',
-          name: 'endTime'
-        },
-        {
-          label: '链接',
-          elType: 'input',
-          placeholder: '',
-          value: '',
-          name: 'link'
-        },
-        {
-          label: '图片链接',
-          elType: 'input',
-          placeholder: '',
-          value: '',
-          name: 'picLink'
-        },
-        {
-          label: '活动状态',
-          elType: 'select',
-          placeholder: '请选择活动状态',
-          value: '',
-          name: 'actvieState',
-          options: [
-            {
-              label: '未开始',
-              value: 1
-            },
-            {
-              label: '已开始',
-              value: 2
-            },
-            {
-              label: '已结束',
-              value: 3
-            }
-          ]
-        },
-        {
-          label: '地域限制',
-          elType: 'input',
-          placeholder: '请输入地域限制',
-          value: '',
-          name: 'id'
-        }
-      ],
       baseSearchs: [
         {
           label: '活动开始时间',
           elType: 'date',
           placeholder: '请选择活动开始时间',
           value: '',
-          name: 'itemCode'
+          name: 'start_time'
         },
         {
           label: '活动结束时间',
           elType: 'date',
           placeholder: '请输入活动结束时间',
           value: '',
-          name: 'vendorCode'
+          name: 'end_time'
         },
         {
           label: '状态',
           elType: 'select',
           placeholder: '请选择状态',
           value: '',
-          name: 'state',
+          name: 'consume_status',
           options: [
             {
               label: '已完成',
@@ -204,6 +83,7 @@ export default {
         }
       ],
       baseFormData: {},
+      formData: {},
       // here is table
       columns: [
         {
@@ -212,71 +92,70 @@ export default {
         },
         {
           title: '订单时间',
-          props: 'registTime'
+          props: 'insert_time'
         },
         {
           title: '用户id',
-          props: 'id'
+          props: 'user_id'
         },
         {
           title: '商品id',
-          props: 'id'
+          props: 'product_id'
         },
         {
           title: '金额',
-          props: 'id'
+          props: 'price'
         },
         {
           title: '状态',
-          props: 'address'
+          props: 'consume_status'
         }
       ],
       operations: [
         {
-          label: '编辑',
+          label: '查看消费记录',
           handler: (row) => {
-            console.log(row);
-            // this.$message.success('编辑');
-            this.$router.push('/orders/expense');
+            const { id } = row;
+            this.$router.push({
+              path: '/orders/expense',
+              query: {
+                id
+              }
+            });
           }
         }
       ],
       configs: {
-        loadDataApi: function () {
+        loadDataApi: (p) => {
           return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(Response);
-            }, 100);
+            fetchOrderList(queryParams(p, this.formData)).then((res) => {
+              resolve(res);
+            });
           });
         },
         fetchListData: function (res) {
           return res.data;
         },
         fetchTotal: function (res) {
-          return res.total;
+          return res.meta.count;
         },
         generateQueryParams: function (pagination) {
           let { pageIndex, pageSize } = pagination;
           return {
-            page: pageIndex,
-            limit: pageSize
+            page_size: pageSize,
+            page_num: pageIndex
           };
         }
       }
     };
   },
   methods: {
-    add(val, key) {
-      console.log(val, key);
-    },
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
-      console.log(val);
-      console.log(key);
       if (key === 'search') {
-        console.log(val);
-        alert(JSON.stringify(val));
+        this.formData = val;
+        this.$refs.gird.query();
       } else {
         const formEle = this.$refs.baseSearchEle;
         formEle.empty();

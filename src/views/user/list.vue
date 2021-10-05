@@ -5,7 +5,6 @@
         :baseSearchs="baseSearchs"
         :allSearchs="allSearchs"
         :base-handles="baseHandles"
-        :all-handles="AllHandles"
         :baseData="baseFormData"
         ref="baseSearchEle"
       />
@@ -14,12 +13,13 @@
         :columns="columns"
         :operations="operations"
         :store-config="configs"
+        ref="grid"
       ></sf-grid>
       <el-dialog title="修改推广码" :visible.sync="isShow" width="30%">
         <sf-base-form :eles="eles" ref="mybaseForm"></sf-base-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="isShow = false">取 消</el-button>
-          <el-button type="primary" @click="isShow = false">确 定</el-button>
+          <el-button type="primary" @click="handleChangeCode">确 定</el-button>
         </span>
       </el-dialog>
     </template>
@@ -27,64 +27,9 @@
 </template>
 
 <script>
+import { queryParams } from '@/utils';
 import { mapGetters } from 'vuex';
-const Response = {
-  data: [
-    {
-      id: 0,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 1,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 2,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 3,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    }
-  ],
-  total: 120
-};
+import { fetchUserList, fetchChangeCode } from '@/api/user';
 
 export default {
   computed: {
@@ -97,6 +42,7 @@ export default {
     return {
       // here is dialog
       isShow: false,
+      product_name: 'aaaaa',
       eles: [
         {
           label: '用户id',
@@ -112,14 +58,14 @@ export default {
           placeholder: '请输入自己的推广码',
           readonly: true,
           value: '',
-          name: 'name'
+          name: 'old_promotion_code'
         },
         {
           label: '新推广码',
           elType: 'input',
           placeholder: '请输入自己的推广码',
           value: '',
-          name: 'itemCode'
+          name: 'promotion_code'
         }
       ],
       baseSearchs: [
@@ -144,14 +90,14 @@ export default {
           elType: 'input',
           placeholder: '请输入用户手机号',
           value: '',
-          name: 'itemCode'
+          name: 'phone'
         },
         {
           label: '推广码',
           elType: 'input',
           placeholder: '请输入推广码',
           value: '',
-          name: 'vendorCode'
+          name: 'promotion_code'
         },
         {
           label: '注册时间',
@@ -218,76 +164,76 @@ export default {
         }
       ],
       baseFormData: {},
+      formData: {},
       // here is table
       columns: [
         {
           title: '用户id',
-          props: 'name'
+          props: 'id'
         },
         {
           title: '用户手机号',
-          props: 'address'
+          props: 'phone'
         },
         {
           title: '注册时间',
-          props: 'registTime'
+          props: 'insert_time'
         },
         {
           title: '微信昵称',
-          props: 'address'
+          props: 'wechat_nick_name'
         },
         {
           title: '自己的推广码',
-          props: 'address'
+          props: 'promotion_code'
         },
         {
           title: '账户积分',
-          props: 'address'
+          props: 'score'
         },
         {
           title: '位置',
-          props: 'address'
+          formatter(val) {
+            const { province, city } = val;
+            return province + '/' + city;
+          }
         },
         {
-          title: '所属运营中心',
-          props: 'address'
-        },
-        {
-          title: '所属咨询中心',
-          props: 'address'
+          title: '所属单位',
+          props: 'platform'
         }
       ],
       operations: [
         {
           label: '编辑',
           handler: (row) => {
-            console.log(row);
             this.isShow = true;
-            const {id, name} = row;
+            const { id, promotion_code } = row;
             this.eles[0].value = id;
-            this.eles[1].value = name;
+            this.eles[1].value = promotion_code;
+            this.eles[2].value = '';
           }
         }
       ],
       configs: {
-        loadDataApi: function () {
+        loadDataApi: (p) => {
           return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(Response);
-            }, 100);
+            fetchUserList(queryParams(p, this.formData)).then((res) => {
+              resolve(res);
+            });
           });
         },
         fetchListData: function (res) {
           return res.data;
         },
         fetchTotal: function (res) {
-          return res.total;
+          return res.meta.count;
         },
-        generateQueryParams: function (pagination) {
+        generateQueryParams: (pagination) => {
           let { pageIndex, pageSize } = pagination;
           return {
-            page: pageIndex,
-            limit: pageSize
+            page_size: pageSize,
+            page_num: pageIndex
           };
         }
       }
@@ -297,18 +243,20 @@ export default {
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
-      console.log(val);
-      console.log(key);
       if (key === 'search') {
-        console.log(val);
-        alert(JSON.stringify(val));
+        this.formData = val;
+        this.$refs.grid.query();
       } else {
         const formEle = this.$refs.baseSearchEle;
         formEle.empty();
       }
     },
-    handerAll(val, key) {
-      console.log(val, key);
+    handleChangeCode() {
+      const data = this.$refs.mybaseForm.getVal();
+      fetchChangeCode(data).then((res) => {
+        console.log(res);
+        this.isShow = false;
+      });
     }
   }
 };

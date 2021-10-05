@@ -3,9 +3,7 @@
     <template>
       <sf-base-search
         :baseSearchs="baseSearchs"
-        :allSearchs="allSearchs"
         :base-handles="baseHandles"
-        :all-handles="AllHandles"
         :baseData="baseFormData"
         ref="baseSearchEle"
       />
@@ -14,12 +12,13 @@
         :columns="columns"
         :operations="operations"
         :store-config="configs"
+        ref="grid"
       ></sf-grid>
       <el-dialog title="修改推广关系" :visible.sync="isShow" width="30%">
-        <sf-base-form :eles="eles" ref="mybaseForm"></sf-base-form>
+        <sf-base-form :eles="eles" ref="updateForm"></sf-base-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="isShow = false">取 消</el-button>
-          <el-button type="primary" @click="isShow = false">确 定</el-button>
+          <el-button type="primary" @click="handleSubmitChangeRelaship">确 定</el-button>
         </span>
       </el-dialog>
     </template>
@@ -28,63 +27,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
-const Response = {
-  data: [
-    {
-      id: 0,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 1,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 2,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    },
-    {
-      id: 3,
-      tel: '1521234098',
-      registTime: 1621395027069,
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄',
-      wechat: 'xxx',
-      zijima: '1111',
-      jifeng: 'aaaa',
-      postion: 'aasafsaf',
-      yunying: '1111',
-      zixun: '2222'
-    }
-  ],
-  total: 120
-};
+import {
+  fetchNewUserList,
+  fetchNewUserById,
+  fetchUpdateRelaship
+} from '@/api/user';
+import { queryParams } from '@/utils';
 
 export default {
   computed: {
@@ -112,14 +60,14 @@ export default {
           placeholder: '',
           readonly: true,
           value: '',
-          name: 'itemCode'
+          name: 'no'
         },
         {
           label: '新推广人',
           elType: 'input',
           placeholder: '请输入新推广人ID',
           value: '',
-          name: 'newCode'
+          name: 'promotion_user_id'
         }
       ],
       baseSearchs: [
@@ -128,30 +76,21 @@ export default {
           elType: 'input',
           placeholder: '请输入推荐者推广码',
           value: '',
-          name: 'itemCode'
+          name: 'promotion_user_code'
         },
         {
           label: '注册时间',
           elType: 'date',
           placeholder: '请输入注册时间',
           value: '',
-          name: 'vendorCode'
-        }
-      ],
-      allSearchs: [
-        {
-          label: '推荐者推广码',
-          elType: 'input',
-          placeholder: '请输入推荐者推广码',
-          value: '',
-          name: 'itemCode'
+          name: 'register_start_time'
         },
         {
           label: '注册时间',
           elType: 'date',
           placeholder: '请输入注册时间',
           value: '',
-          name: 'vendorCode'
+          name: 'register_end_time'
         }
       ],
       baseHandles: [
@@ -173,70 +112,83 @@ export default {
       columns: [
         {
           title: '用户id',
-          props: 'name'
+          props: 'id'
         },
         {
           title: '用户手机号',
-          props: 'address'
+          props: 'phone'
         },
         {
           title: '注册时间',
-          props: 'registTime'
+          props: 'insert_time'
         },
         {
           title: '微信昵称',
-          props: 'address'
+          props: 'wechat_nick_name'
         },
         {
           title: '推荐者推广码',
-          props: 'address'
+          props: 'promotion_person_code'
         }
       ],
       operations: [
         {
           label: '编辑',
           handler: (row) => {
-            console.log(row);
-            this.isShow = true;
-            const { id, name } = row;
-            this.eles[0].value = id;
-            this.eles[1].value = name;
+            const { id } = row;
+            fetchNewUserById({
+              id
+            }).then((res) => {
+              console.log(res);
+              this.isShow = true;
+              const { promotion_code, promotion_person_id } = res.data;
+              this.eles[0].value = id;
+              this.eles[1].value = promotion_code;
+              this.eles[2].value = promotion_person_id;
+            });
           }
         }
       ],
+      formData: {},
       configs: {
-        loadDataApi: function () {
+        loadDataApi: (p) => {
           return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(Response);
-            }, 100);
+            fetchNewUserList(queryParams(p, this.formData)).then((res) => {
+              resolve(res);
+            });
           });
         },
         fetchListData: function (res) {
           return res.data;
         },
         fetchTotal: function (res) {
-          return res.total;
+          return res.meta.count;
         },
         generateQueryParams: function (pagination) {
           let { pageIndex, pageSize } = pagination;
           return {
-            page: pageIndex,
-            limit: pageSize
+            page_num: pageIndex,
+            page_size: pageSize
           };
         }
       }
     };
   },
   methods: {
+    handleSubmitChangeRelaship() {
+      const val = this.$refs.updateForm.getVal();
+      delete val.no;
+      fetchUpdateRelaship(val).then(res => {
+        this.isShow = false;
+        this.$refs.grid.query();
+      })
+    },
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
-      console.log(val);
-      console.log(key);
       if (key === 'search') {
-        console.log(val);
-        alert(JSON.stringify(val));
+        this.formData = val;
+        this.$refs.grid.query();
       } else {
         const formEle = this.$refs.baseSearchEle;
         formEle.empty();

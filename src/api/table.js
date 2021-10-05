@@ -1,18 +1,18 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 
-const baseUlr = 'http://10.8.201.39:3301'
+const baseUlr = 'http://10.8.201.39:3301';
 export function getCategorys() {
   return request({
     url: `${baseUlr}/bossapi/categorys`,
     method: 'get'
-  })
+  });
 }
 export function createArticle(data) {
   return request({
     url: `${baseUlr}/bossapi/create`,
     method: 'post',
     data
-  })
+  });
 }
 
 export function getArticles(params) {
@@ -20,7 +20,7 @@ export function getArticles(params) {
     url: `${baseUlr}/bossapi/articles`,
     method: 'get',
     params
-  })
+  });
 }
 
 export function deleteArticle(params) {
@@ -28,7 +28,7 @@ export function deleteArticle(params) {
     url: `${baseUlr}/bossapi/delete`,
     method: 'delete',
     params
-  })
+  });
 }
 
 export function recoverArticle(params) {
@@ -36,7 +36,7 @@ export function recoverArticle(params) {
     url: `${baseUlr}/bossapi/recover`,
     method: 'delete',
     params
-  })
+  });
 }
 
 export function updateArticle(data) {
@@ -44,5 +44,5 @@ export function updateArticle(data) {
     url: `${baseUlr}/bossapi/update`,
     method: 'post',
     data
-  })
+  });
 }

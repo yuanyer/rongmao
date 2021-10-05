@@ -17,11 +17,13 @@
         <sf-base-form
           width="400px"
           :eles="eles"
-          ref="mybaseForm"
+          ref="createAccountForm"
         ></sf-base-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="isShow = false">取 消</el-button>
-          <el-button type="primary" @click="isShow = false">确 定</el-button>
+          <el-button @click="handleCancleCreate">取 消</el-button>
+          <el-button type="primary" @click="handleCreatAccount">
+            确 定
+          </el-button>
         </span>
       </el-dialog>
 
@@ -32,8 +34,8 @@
           ref="resetPwd"
         ></sf-base-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="reSetShow = false">取 消</el-button>
-          <el-button type="primary" @click="reSetShow = false">确 定</el-button>
+          <el-button @click="handleCancelRestPwd">取 消</el-button>
+          <el-button type="primary" @click="handleRestPwd">确 定</el-button>
         </span>
       </el-dialog>
     </template>
@@ -42,6 +44,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { fetchCreateAccount, fetchUpdatePwd } from '@/api/authority';
+
 const Response = {
   data: [
     {
@@ -116,7 +120,7 @@ export default {
         {
           label: '用户id',
           elType: 'input',
-          placeholder: '请输入活动名称',
+          placeholder: '请输入用户id',
           readonly: true,
           value: '',
           name: 'id'
@@ -126,28 +130,28 @@ export default {
           elType: 'input',
           placeholder: '请输入用户名',
           value: '',
-          name: 'userName'
+          name: 'user_name'
         },
         {
           label: '绑定的手机号',
           elType: 'input',
           placeholder: '请输入手机号',
           value: '',
-          name: 'tel'
+          name: 'phone'
         },
         {
           label: '账号名',
           elType: 'input',
           placeholder: '请输入账号名',
           value: '',
-          name: 'account'
+          name: 'account_name'
         },
         {
           label: '账号类型',
           elType: 'select',
           placeholder: '请选择账号类型',
           value: '',
-          name: 'accountType',
+          name: 'account_type',
           options: [
             {
               label: '平台管理员',
@@ -205,14 +209,14 @@ export default {
           elType: 'input',
           placeholder: '请输入新密码',
           value: '',
-          name: 'newPwd'
+          name: 'password'
         },
         {
           label: '确认新密码',
           elType: 'input',
           placeholder: '再次确认新密码',
           value: '',
-          name: 'newPwdAgain'
+          name: 'confirm_password'
         }
       ],
       resetForm: [
@@ -221,7 +225,7 @@ export default {
           elType: 'input',
           readonly: true,
           placeholder: '请输入帐户名',
-          value: 'test account',
+          value: '',
           name: 'userName'
         },
         {
@@ -229,14 +233,14 @@ export default {
           elType: 'input',
           placeholder: '输入新密码',
           value: '',
-          name: 'newPwd'
+          name: 'password'
         },
         {
           label: '确认新密码',
           elType: 'input',
           placeholder: '再次输入新密码',
           value: '',
-          name: 'pwdAgain'
+          name: 'confirm_password'
         }
       ],
       baseSearchs: [
@@ -310,11 +314,14 @@ export default {
           props: 'name'
         }
       ],
+      id: '',
       operations: [
         {
           label: '重置密码',
           handler: (row) => {
             console.log(row);
+            const { id } = row;
+            this.id = id;
             this.reSetShow = true;
           }
         }
@@ -344,14 +351,39 @@ export default {
     };
   },
   methods: {
+    handleCancleCreate() {
+      this.isShow = false;
+      this.handleClearCatch();
+    },
+    handleCancelRestPwd() {
+      this.reSetShow = false;
+      this.handleClearCatch();
+    },
+    handleClearCatch() {
+      this.$refs.createAccountForm ? this.$refs.createAccountForm.empty() : '';
+      this.$refs.resetPwd ? this.$refs.resetPwd.empty() : '';
+    },
+    handleRestPwd() {
+      const val = this.$refs.resetPwd.getVal();
+      val.id = this.id;
+      fetchUpdatePwd(val).then((res) => {
+        this.reSetShow = false;
+        this.handleClearCatch();
+      });
+    },
+    handleCreatAccount() {
+      const val = this.$refs.createAccountForm.getVal();
+      fetchCreateAccount(val).then((res) => {
+        this.isShow = false;
+        this.handleClearCatch();
+      });
+    },
     add(val, key) {
       console.log(val, key);
     },
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
-      console.log(val);
-      console.log(key);
       if (key === 'search') {
         console.log(val);
         alert(JSON.stringify(val));
