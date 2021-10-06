@@ -18,7 +18,9 @@
         <sf-base-form :eles="eles" ref="updateForm"></sf-base-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="isShow = false">取 消</el-button>
-          <el-button type="primary" @click="handleSubmitChangeRelaship">确 定</el-button>
+          <el-button type="primary" @click="handleSubmitChangeRelaship"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </template>
@@ -80,17 +82,11 @@ export default {
         },
         {
           label: '注册时间',
-          elType: 'date',
-          placeholder: '请输入注册时间',
-          value: '',
-          name: 'register_start_time'
-        },
-        {
-          label: '注册时间',
-          elType: 'date',
-          placeholder: '请输入注册时间',
-          value: '',
-          name: 'register_end_time'
+          elType: 'date-range',
+          placeholder: '请选择注册时间',
+          width: '380px',
+          value: [],
+          name: 'register_time'
         }
       ],
       baseHandles: [
@@ -178,16 +174,22 @@ export default {
     handleSubmitChangeRelaship() {
       const val = this.$refs.updateForm.getVal();
       delete val.no;
-      fetchUpdateRelaship(val).then(res => {
+      fetchUpdateRelaship(val).then((res) => {
         this.isShow = false;
         this.$refs.grid.query();
-      })
+      });
     },
     // val: 当前表单中的数据
     // key 用来handles 中设置的唯一标识key值
     handleBaseSearch(val, key) {
       if (key === 'search') {
-        this.formData = val;
+        // this.formData = val;
+        const { promotion_user_code, register_time } = val;
+        this.formData = {
+          promotion_user_code,
+          register_start_time: register_time[0],
+          register_end_time: register_time[1]
+        };
         this.$refs.grid.query();
       } else {
         const formEle = this.$refs.baseSearchEle;
