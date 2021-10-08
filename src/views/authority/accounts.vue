@@ -117,14 +117,14 @@ export default {
       isShow: false,
       reSetShow: false,
       eles: [
-        {
-          label: '用户id',
-          elType: 'input',
-          placeholder: '请输入用户id',
-          readonly: true,
-          value: '',
-          name: 'id'
-        },
+        // {
+        //   label: '用户id',
+        //   elType: 'input',
+        //   placeholder: '请输入用户id',
+        //   readonly: true,
+        //   value: '',
+        //   name: 'id'
+        // },
         {
           label: '用户名',
           elType: 'input',
@@ -147,7 +147,7 @@ export default {
           name: 'account_name'
         },
         {
-          label: '账号类型',
+          label: '对应部门ID',
           elType: 'select',
           placeholder: '请选择账号类型',
           value: '',
@@ -171,35 +171,6 @@ export default {
             },
             {
               label: '门店',
-              value: 5
-            }
-          ]
-        },
-        {
-          label: '上级账号',
-          elType: 'select',
-          placeholder: '请选择上级账号',
-          value: '',
-          name: 'upAccount',
-          options: [
-            {
-              label: '1',
-              value: 1
-            },
-            {
-              label: '2',
-              value: 2
-            },
-            {
-              label: '3',
-              value: 3
-            },
-            {
-              label: '4',
-              value: 4
-            },
-            {
-              label: '5',
               value: 5
             }
           ]

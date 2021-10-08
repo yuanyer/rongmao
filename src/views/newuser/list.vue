@@ -129,12 +129,10 @@ export default {
       ],
       operations: [
         {
-          label: '编辑',
+          label: '修改推荐关系',
           handler: (row) => {
             const { id } = row;
-            fetchNewUserById({
-              id
-            }).then((res) => {
+            fetchNewUserById({ id }).then((res) => {
               console.log(res);
               this.isShow = true;
               const { promotion_code, promotion_person_id } = res.data;

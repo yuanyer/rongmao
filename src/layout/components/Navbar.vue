@@ -5,7 +5,8 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <div class="avatar-container">你好，{{ userName }}</div>
+      <!-- <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -20,7 +21,7 @@
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown> -->
     </div>
   </div>
 </template>
@@ -34,6 +35,15 @@ export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    return {
+      userName: '用户'
+    }
+  },
+  mounted() {
+    const userInfo = localStorage.getItem('userInfo')
+    this.userName = JSON.parse(userInfo).user_name
   },
   computed: {
     ...mapGetters([

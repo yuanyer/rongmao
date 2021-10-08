@@ -1,18 +1,21 @@
 import axios from 'axios';
 axios.defaults.withCredentials = true;
+
+const token = localStorage.getItem('token')
 // 创建axios实例
 const service = axios.create({
   // eslint-disable-next-line no-undef
-  baseURL: '',
-  headers: { 'Content-Type': 'application/json' }
+  baseURL: '/api',
+  headers: { 'Content-Type': 'application/json', 'token': token }
 });
 
 // 请求拦截
 service.interceptors.request.use((config) => {
   // const token = getToken();
-  // if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
-  // config.headers.token = token;
-  // }
+  const token = localStorage.getItem('token')
+  if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
+    config.headers.token = token
+  }
   // console.log('token：' + config.headers.token);
   console.log('============start request================');
   // console.log('token:' + token);
@@ -30,6 +33,9 @@ service.interceptors.response.use(
     console.log('data:' + JSON.stringify(response.data));
     console.log('============end response================');
     const { status, data } = response;
+    if (data.code == '9999') {
+      window.location.href = '/#/login'
+    }
     return data;
   },
   (error) => {

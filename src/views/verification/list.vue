@@ -77,39 +77,6 @@ export default {
               value: 0
             }
           ]
-        }
-      ],
-      allSearchs: [
-        {
-          label: '开始时间',
-          elType: 'date',
-          placeholder: '请选择开始时间',
-          value: '',
-          name: 'start_time'
-        },
-        {
-          label: '结束时间',
-          elType: 'date',
-          placeholder: '请选择结束时间',
-          value: '',
-          name: 'end_time'
-        },
-        {
-          label: '状态',
-          elType: 'select',
-          placeholder: '请选择状态',
-          value: '',
-          name: 'user_confirm_status',
-          options: [
-            {
-              label: '已核销',
-              value: 1
-            },
-            {
-              label: '待核销',
-              value: 0
-            }
-          ]
         },
         {
           label: '订单id',
@@ -133,6 +100,7 @@ export default {
           name: 'product_id'
         }
       ],
+      allSearchs: [],
       baseHandles: [
         {
           btnType: 'primary',
@@ -154,10 +122,10 @@ export default {
           title: '核销码',
           props: 'code'
         },
-        {
-          title: '核销时间',
-          props: 'user_confirm_time'
-        },
+        // {
+        //   title: '核销时间',
+        //   props: 'user_confirm_time'
+        // },
         {
           title: '商品id',
           props: 'product_id'

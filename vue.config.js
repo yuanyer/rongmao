@@ -37,8 +37,12 @@ module.exports = {
         //   '/bossapi': ''
         // }
       },
+      // '/api': {
+      //   target: 'http://yapi.smart-xwork.cn/mock/99265',
+      //   changeOrigin: true
+      // },
       '/api': {
-        target: 'http://yapi.smart-xwork.cn/mock/99265',
+        target: 'http://platform-dev.rongcat.net',
         changeOrigin: true
       }
     }

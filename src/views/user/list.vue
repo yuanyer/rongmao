@@ -74,22 +74,6 @@ export default {
           elType: 'input',
           placeholder: '请输入用户手机号',
           value: '',
-          name: 'itemCode'
-        },
-        {
-          label: '推广码',
-          elType: 'input',
-          placeholder: '请输入推广码',
-          value: '',
-          name: 'vendorCode'
-        }
-      ],
-      allSearchs: [
-        {
-          label: '手机号',
-          elType: 'input',
-          placeholder: '请输入用户手机号',
-          value: '',
           name: 'phone'
         },
         {
@@ -107,44 +91,31 @@ export default {
           name: 'unit'
         },
         {
-          label: '咨询中心',
+          label: '账号类型',
           elType: 'select',
-          placeholder: '请请择咨询中心',
+          placeholder: '请请择单位名称',
           value: '',
           name: 'category',
           options: [
             {
-              label: '品类A',
+              label: '平台管理员',
               value: 1
             },
             {
-              label: '品类B',
+              label: '运营中心',
               value: 2
             },
             {
-              label: '品类C',
+              label: '咨询中心',
               value: 3
-            }
-          ]
-        },
-        {
-          label: '运营中心',
-          elType: 'select',
-          placeholder: '请请择运营中心',
-          value: '',
-          name: 'yunying',
-          options: [
-            {
-              label: '品类A',
-              value: 1
             },
             {
-              label: '品类B',
-              value: 2
+              label: '机构',
+              value: 4
             },
             {
-              label: '品类C',
-              value: 3
+              label: '门店',
+              value: 5
             }
           ]
         }
@@ -165,6 +136,7 @@ export default {
       ],
       baseFormData: {},
       formData: {},
+      allSearchs: [],
       // here is table
       columns: [
         {
@@ -205,9 +177,10 @@ export default {
       ],
       operations: [
         {
-          label: '编辑',
+          label: '修改自己的推广码',
           handler: (row) => {
             this.isShow = true;
+            // this.$refs.mybaseForm.getVal();
             const { id, promotion_code } = row;
             this.eles[0].value = id;
             this.eles[1].value = promotion_code;
@@ -249,13 +222,20 @@ export default {
       } else {
         const formEle = this.$refs.baseSearchEle;
         formEle.empty();
+        this.$refs.grid.query();
       }
     },
     handleChangeCode() {
       const data = this.$refs.mybaseForm.getVal();
       fetchChangeCode(data).then((res) => {
-        console.log(res);
+        if (res.code == '0') {
+          this.$message.success('修改成功')
+        } else {
+          this.$message.error(`修改失败：${res.msg}`)
+        }
+        this.$refs.mybaseForm.getVal();
         this.isShow = false;
+        this.$refs.grid.query();
       });
     }
   }
